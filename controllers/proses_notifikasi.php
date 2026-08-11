@@ -32,6 +32,8 @@ function kirimWA(string $gateway, string $key, string $tujuan, string $pesan): b
         CURLOPT_TIMEOUT        => 15,
         CURLOPT_HTTPHEADER     => ['Authorization: ' . $key],
         CURLOPT_POSTFIELDS     => http_build_query(['target' => $tujuan, 'message' => $pesan]),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
     ]);
     $res = curl_exec($ch);
     $ok  = curl_errno($ch) === 0 && $res !== false;

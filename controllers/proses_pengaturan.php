@@ -38,6 +38,37 @@ try {
             $kembali = 'Location: ../index.php?mod=pengaturan&act=parameter';
             break;
 
+        case 'simpan_logo':
+            if (empty($_FILES['logo']) || $_FILES['logo']['error'] === UPLOAD_ERR_NO_FILE) {
+                throw new Exception('Pilih file logo terlebih dahulu.');
+            }
+            $f = $_FILES['logo'];
+            if ($f['size'] > 512 * 1024) throw new Exception('Ukuran logo maksimal 512 KB.');
+
+            $tipeDiizinkan = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml', 'image/webp'];
+            if (!in_array($f['type'], $tipeDiizinkan)) {
+                throw new Exception('Format logo harus PNG, JPG, GIF, SVG, atau WEBP.');
+            }
+
+            $ext  = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+            $nama = 'logo_' . date('YmdHis') . '.' . $ext;
+
+            $dirImg = __DIR__ . '/../assets/img';
+            if (!is_dir($dirImg)) mkdir($dirImg, 0755, true);
+
+            if (!move_uploaded_file($f['tmp_name'], $dirImg . '/' . $nama)) {
+                throw new Exception('Gagal menyimpan file logo. Periksa izin folder assets/img.');
+            }
+
+            $lama = $model->get('logo', '');
+            if ($lama !== '' && file_exists($dirImg . '/' . $lama)) {
+                @unlink($dirImg . '/' . $lama);
+            }
+
+            $model->set('logo', $nama);
+            flash('success', 'Logo berhasil diganti.');
+            break;
+
         case 'simpan_akad':
             $model->akadSimpan([
                 'id_akad'    => (int)($_POST['id_akad'] ?? 0),

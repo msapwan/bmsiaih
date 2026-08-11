@@ -71,10 +71,10 @@ class SimpananModel
              GROUP BY a.id_anggota ORDER BY a.nama"
         )->fetchAll();
     }
+
     /** Rekening koran: saldo awal + mutasi + saldo berjalan */
     public function rekeningKoran(int $idAnggota, string $dari, string $sampai): array
     {
-        // Saldo awal per jenis (transaksi sebelum periode)
         $st = $this->db->prepare(
             "SELECT jenis_simpanan,
                     COALESCE(SUM(IF(tipe='setor', jumlah, -jumlah)),0) AS saldo
@@ -86,7 +86,6 @@ class SimpananModel
         foreach ($st->fetchAll() as $r) $saldoAwal[$r['jenis_simpanan']] = (float)$r['saldo'];
         $saldoAwalTotal = array_sum($saldoAwal);
 
-        // Mutasi dalam periode
         $st = $this->db->prepare(
             'SELECT tanggal, jenis_simpanan, tipe, jumlah, keterangan
              FROM simpanan

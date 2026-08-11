@@ -33,7 +33,6 @@ try {
 
             $idSimpanan = $model->create($data);
 
-            // Posting jurnal otomatis: Pokok(301)/Wajib(302)=ekuitas, Sukarela(201)=kewajiban
             $mapAkun = ['pokok' => '301', 'wajib' => '302', 'sukarela' => '201'];
             $akunSimpanan = $mapAkun[$data['jenis_simpanan']];
             $jm = new JurnalModel();

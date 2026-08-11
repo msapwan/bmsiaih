@@ -36,10 +36,10 @@ include __DIR__ . '/../layout/header.php';
       <div class="card-footer bg-white d-flex gap-2">
         <a href="index.php?mod=anggota&act=form&id=<?= $id ?>" class="btn btn-sm btn-primary flex-fill">
           <i class="fas fa-edit me-1"></i> Edit</a>
-<a href="index.php?mod=anggota&act=rekening_koran&id=<?= $id ?>" class="btn btn-sm btn-secondary flex-fill">
-  <i class="fas fa-file-invoice-dollar me-1"></i> Rek. Koran</a>
         <a href="index.php?mod=simpanan&act=form&id_anggota=<?= $id ?>" class="btn btn-sm btn-success flex-fill">
           <i class="fas fa-plus me-1"></i> Simpanan</a>
+        <a href="index.php?mod=anggota&act=rekening_koran&id=<?= $id ?>" class="btn btn-sm btn-secondary flex-fill">
+          <i class="fas fa-file-invoice-dollar me-1"></i> Rek. Koran</a>
       </div>
     </div>
   </div>

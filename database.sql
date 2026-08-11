@@ -1,9 +1,12 @@
 -- ============================================================
--- DATABASE KOPERASI SYARIAH — VERSI LENGKAP (FINAL)
+-- DATABASE KOPERASI SYARIAH — VERSI FINAL LENGKAP
 -- PERHATIAN: skrip ini MENGHAPUS database lama beserta isinya!
+-- (Untuk ByetHost: hapus 3 baris DROP/CREATE/USE di bawah)
 -- ============================================================
+DROP DATABASE IF EXISTS koperasi_syariah;
+CREATE DATABASE koperasi_syariah CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE koperasi_syariah;
 
--- ---------------- USERS ----------------
 CREATE TABLE users (
     id_user       INT AUTO_INCREMENT PRIMARY KEY,
     username      VARCHAR(50) NOT NULL UNIQUE,
@@ -14,11 +17,9 @@ CREATE TABLE users (
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Login default => admin / admin123 (segera ganti!)
 INSERT INTO users (username, password, nama_lengkap, level) VALUES
 ('admin', 'admin123', 'Administrator Koperasi', 'admin');
 
--- ---------------- ANGGOTA ----------------
 CREATE TABLE anggota (
     id_anggota     INT AUTO_INCREMENT PRIMARY KEY,
     kode_anggota   VARCHAR(20) NOT NULL UNIQUE,
@@ -36,7 +37,6 @@ CREATE TABLE anggota (
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ---------------- SIMPANAN ----------------
 CREATE TABLE simpanan (
     id_simpanan      INT AUTO_INCREMENT PRIMARY KEY,
     id_anggota       INT NOT NULL,
@@ -51,7 +51,6 @@ CREATE TABLE simpanan (
         REFERENCES anggota(id_anggota) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ---------------- JENIS AKAD ----------------
 CREATE TABLE jenis_akad (
     id_akad    INT AUTO_INCREMENT PRIMARY KEY,
     kode_akad  VARCHAR(10) NOT NULL UNIQUE,
@@ -68,7 +67,6 @@ INSERT INTO jenis_akad (kode_akad, nama_akad, tipe_akad, keterangan) VALUES
 ('IJR', 'Ijarah',      'margin',     'Sewa menyewa dengan ujrah (upah) yang disepakati'),
 ('QRD', 'Qardh',       'sosial',     'Pinjaman kebajikan tanpa imbalan');
 
--- ---------------- PENGATURAN ----------------
 CREATE TABLE pengaturan (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     kunci      VARCHAR(50) NOT NULL UNIQUE,
@@ -93,9 +91,11 @@ INSERT INTO pengaturan (kunci, nilai, keterangan) VALUES
 ('shu_pembangunan', '5',      'Alokasi SHU: Dana Pembangunan & Lingkungan (%)'),
 ('wa_gateway',      'https://api.fonnte.com/send', 'URL gateway WhatsApp (Fonnte/Wablas/dll)'),
 ('wa_api_key',      '',       'API key / token gateway WhatsApp'),
-('email_pengirim',  'koperasi@example.com', 'Alamat email pengirim notifikasi');
+('email_pengirim',  'koperasi@example.com', 'Alamat email pengirim notifikasi'),
+('logo',            '',       'Nama file logo di folder assets/img (kosong = ikon default)'),
+('backup_email',    '',       'Email tujuan backup database otomatis (kosong = tanpa email)'),
+('backup_token',    'RAHASIA123', 'Token keamanan script backup — GANTI dengan kata acak!');
 
--- ---------------- PROFIL KOPERASI ----------------
 CREATE TABLE profil_koperasi (
     id            INT PRIMARY KEY DEFAULT 1,
     nama_koperasi VARCHAR(150) NOT NULL,
@@ -110,7 +110,6 @@ INSERT INTO profil_koperasi VALUES
 (1, 'Koperasi Syariah Amanah Ummah', 'Jl. Merdeka No. 17, Bandung', '022-1234567',
  'info@ksu-amanah.co.id', 'H. Ahmad Fauzi', 'Berkah Bersama, Tumbuh Bersama');
 
--- ---------------- PEMBIAYAAN ----------------
 CREATE TABLE pembiayaan (
     id_pembiayaan       INT AUTO_INCREMENT PRIMARY KEY,
     no_pembiayaan       VARCHAR(30) NOT NULL UNIQUE,
@@ -135,7 +134,6 @@ CREATE TABLE pembiayaan (
         REFERENCES jenis_akad(id_akad)
 ) ENGINE=InnoDB;
 
--- ---------------- ANGSURAN ----------------
 CREATE TABLE angsuran (
     id_angsuran         INT AUTO_INCREMENT PRIMARY KEY,
     id_pembiayaan       INT NOT NULL,
@@ -151,7 +149,6 @@ CREATE TABLE angsuran (
         REFERENCES pembiayaan(id_pembiayaan) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ---------------- AKUN (CHART OF ACCOUNTS) ----------------
 CREATE TABLE akun (
     id_akun      INT AUTO_INCREMENT PRIMARY KEY,
     kode_akun    VARCHAR(10) NOT NULL UNIQUE,
@@ -183,7 +180,6 @@ INSERT INTO akun (kode_akun, nama_akun, tipe, saldo_normal) VALUES
 ('503','Beban Administrasi','beban','debit'),
 ('509','Beban Lainnya','beban','debit');
 
--- ---------------- JURNAL ----------------
 CREATE TABLE jurnal (
     id_jurnal   INT AUTO_INCREMENT PRIMARY KEY,
     no_jurnal   VARCHAR(30) NOT NULL UNIQUE,
@@ -208,7 +204,6 @@ CREATE TABLE jurnal_detail (
         REFERENCES akun(id_akun)
 ) ENGINE=InnoDB;
 
--- ---------------- DENDA TA'ZIR ----------------
 CREATE TABLE denda (
     id_denda       INT AUTO_INCREMENT PRIMARY KEY,
     id_angsuran    INT NOT NULL,
@@ -224,7 +219,6 @@ CREATE TABLE denda (
         REFERENCES angsuran(id_angsuran) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ---------------- SHU ----------------
 CREATE TABLE shu (
     id_shu            INT AUTO_INCREMENT PRIMARY KEY,
     tahun             SMALLINT NOT NULL UNIQUE,
@@ -263,7 +257,6 @@ CREATE TABLE shu_anggota (
         REFERENCES anggota(id_anggota) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ---------------- LOG NOTIFIKASI ----------------
 CREATE TABLE notifikasi_kirim (
     id_kirim      INT AUTO_INCREMENT PRIMARY KEY,
     id_angsuran   INT NOT NULL,
@@ -274,7 +267,15 @@ CREATE TABLE notifikasi_kirim (
     tanggal_kirim DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ---------------- DATA CONTOH ----------------
+CREATE TABLE backup_log (
+    id_backup   INT AUTO_INCREMENT PRIMARY KEY,
+    tanggal     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tujuan      VARCHAR(255) DEFAULT NULL,
+    status      ENUM('sukses','gagal') NOT NULL DEFAULT 'sukses',
+    ukuran      INT NOT NULL DEFAULT 0,
+    keterangan  VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB;
+
 INSERT INTO anggota (kode_anggota, nik, nama, jenis_kelamin, tempat_lahir, tanggal_lahir, alamat, no_hp, email, pekerjaan, tanggal_daftar) VALUES
 ('AGT-0001', '3204010101900001', 'Budi Santoso', 'L', 'Bandung', '1990-01-01', 'Jl. Kenanga No. 3, Bandung', '081234567890', 'budi@example.com', 'Wiraswasta', '2025-01-10'),
 ('AGT-0002', '3204010202920002', 'Siti Aminah',  'P', 'Garut',   '1992-02-02', 'Jl. Melati No. 8, Bandung', '081298765432', 'siti@example.com', 'Guru', '2025-02-15');

@@ -1,8 +1,13 @@
 <?php
 session_start();
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/models/PengaturanModel.php';
 
 if (isset($_SESSION['user'])) { header('Location: index.php'); exit; }
+
+$pmLogin      = new PengaturanModel();
+$logoLogin    = trim((string)$pmLogin->get('logo', ''));
+$logoLoginAda = $logoLogin !== '' && file_exists(__DIR__ . '/assets/img/' . $logoLogin);
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,11 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<?php if ($logoLoginAda): ?><link rel="icon" href="assets/img/<?= htmlspecialchars($logoLogin) ?>"><?php endif; ?>
 </head>
 <body class="login-body">
 <div class="login-card">
   <div class="text-center mb-4">
-    <div class="login-logo"><i class="fas fa-mosque"></i></div>
+    <div class="login-logo">
+      <?php if ($logoLoginAda): ?>
+        <img src="assets/img/<?= htmlspecialchars($logoLogin) ?>" alt="Logo">
+      <?php else: ?>
+        <i class="fas fa-mosque"></i>
+      <?php endif; ?>
+    </div>
     <h4 class="mt-2 mb-0">Koperasi Syariah</h4>
     <small class="text-muted">Sistem Informasi Koperasi Syariah</small>
   </div>

@@ -10,7 +10,6 @@ class JurnalModel
         $this->db = Database::getInstance();
     }
 
-    /* ---------------- AKUN ---------------- */
     public function akunSemua(): array
     {
         return $this->db->query('SELECT * FROM akun ORDER BY kode_akun')->fetchAll();
@@ -24,7 +23,6 @@ class JurnalModel
         return $r ? (int)$r['id_akun'] : null;
     }
 
-    /* ---------------- JURNAL ---------------- */
     public function all(string $dari = '', string $sampai = ''): array
     {
         $sql = 'SELECT j.*, COALESCE(SUM(IF(jd.posisi="debit", jd.jumlah, 0)),0) AS total_debit
@@ -80,7 +78,6 @@ class JurnalModel
         return $id;
     }
 
-    /** Posting otomatis dari modul lain; gagal jurnal tidak mengganggu transaksi utama */
     public function otomatis(string $sumber, string $referensi, string $tanggal, string $keterangan, array $lines): void
     {
         try {
@@ -109,7 +106,6 @@ class JurnalModel
         return 'JU-' . date('Ym') . '-' . str_pad($n, 4, '0', STR_PAD_LEFT);
     }
 
-    /* ---------------- SALDO AWAL ---------------- */
     public function saldoAwalAda(): array
     {
         $j = $this->db->query(
@@ -140,7 +136,6 @@ class JurnalModel
         $this->buat($tanggal, 'Saldo Awal', '', 'saldo_awal', $details);
     }
 
-    /* ---------------- SALDO & LAPORAN ---------------- */
     public function saldoPerAkun(string $sampai = ''): array
     {
         $sql = "SELECT a.id_akun, a.kode_akun, a.nama_akun, a.tipe, a.saldo_normal,
@@ -224,7 +219,6 @@ class JurnalModel
         ];
     }
 
-    /* ---------------- BUKU BESAR ---------------- */
     public function bukuBesar(int $idAkun, string $dari, string $sampai): array
     {
         $st = $this->db->prepare('SELECT * FROM akun WHERE id_akun = ?');
@@ -266,7 +260,6 @@ class JurnalModel
         ];
     }
 
-    /* ---------------- ARUS KAS ---------------- */
     public function arusKas(string $dari, string $sampai): array
     {
         $kas = $this->db->query("SELECT id_akun FROM akun WHERE kode_akun IN ('101','102')")

@@ -40,9 +40,8 @@ include __DIR__ . '/../layout/header.php';
             <a class="btn btn-sm btn-outline-info" title="Detail"
                href="index.php?mod=anggota&act=detail&id=<?= (int)$r['id_anggota'] ?>"><i class="fas fa-eye"></i></a>
             <a class="btn btn-sm btn-outline-secondary" title="Rekening Koran"
-   href="index.php?mod=anggota&act=rekening_koran&id=<?= (int)$r['id_anggota'] ?>">
-  <i class="fas fa-file-invoice-dollar"></i></a>
-<a class="btn btn-sm btn-outline-primary" title="Edit"
+               href="index.php?mod=anggota&act=rekening_koran&id=<?= (int)$r['id_anggota'] ?>"><i class="fas fa-file-invoice-dollar"></i></a>
+            <a class="btn btn-sm btn-outline-primary" title="Edit"
                href="index.php?mod=anggota&act=form&id=<?= (int)$r['id_anggota'] ?>"><i class="fas fa-edit"></i></a>
             <a class="btn btn-sm btn-outline-danger btn-hapus" title="Hapus"
                href="controllers/proses_anggota.php?aksi=hapus&id=<?= (int)$r['id_anggota'] ?>"><i class="fas fa-trash"></i></a>

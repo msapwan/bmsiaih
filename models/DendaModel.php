@@ -26,7 +26,6 @@ class DendaModel
         return 'Rp ' . number_format($this->tarifHarian(), 0, ',', '.') . ' per hari';
     }
 
-    /** Denda: nominal (Rp/hari) ATAU persen (%/hari dari tagihan angsuran) */
     public function hitung(array $angsuran, string $tanggalBayar): array
     {
         $hari = (int)floor((strtotime($tanggalBayar) - strtotime($angsuran['tanggal_jatuh_tempo'])) / 86400);
@@ -73,7 +72,6 @@ class DendaModel
         return (int)$this->db->lastInsertId();
     }
 
-    /** Bayar denda → Dana Sosial (305), bukan pendapatan */
     public function bayar(int $id, string $tanggal): void
     {
         $st = $this->db->prepare('SELECT * FROM denda WHERE id_denda = ?');

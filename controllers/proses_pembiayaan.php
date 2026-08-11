@@ -47,7 +47,6 @@ try {
             $idPembiayaan = (int)$_POST['id_pembiayaan'];
             $model->setujui($idPembiayaan, $tanggalAkad);
 
-            // Jurnal pencairan: Dr Piutang, Cr Kas
             $p = $model->find($idPembiayaan);
             $akunPiutang = $mapPiutang[$p['tipe_akad']] ?? '112';
             (new JurnalModel())->otomatis(
@@ -85,7 +84,6 @@ try {
             $model->bayarAngsuran($idAngsuran, $jumlahBayar, $tanggal);
             $a2 = $model->findAngsuran($idAngsuran);
 
-            // Jurnal pembayaran angsuran
             $jm = new JurnalModel();
             $akunPiutang    = $mapPiutang[$p['tipe_akad']] ?? '112';
             $akunPendapatan = $mapPendapatan[$p['kode_akad']] ?? '402';
@@ -105,7 +103,6 @@ try {
                 ]);
             }
 
-            // Denda ta'zir (jika terlambat & belum pernah didenda)
             $dm = new DendaModel();
             if ($a['status'] === 'belum'
                 && strtotime($tanggal) > strtotime($a['tanggal_jatuh_tempo'])

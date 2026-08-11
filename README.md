@@ -1,35 +1,46 @@
-# Aplikasi Koperasi Syariah
+# Aplikasi Koperasi Syariah (Versi Final)
 
 Sistem informasi koperasi syariah berbasis **PHP native (PDO) + MySQL + Bootstrap 5**.
 
 ## Fitur Lengkap
 - **Dashboard** — statistik anggota, simpanan, outstanding pembiayaan, NPF.
-- **Anggota** — CRUD, pencarian, detail + riwayat.
+- **Anggota** — CRUD, pencarian, detail + riwayat, **Rekening Koran** (cetak/PDF & Excel).
 - **Simpanan** — pokok/wajib/sukarela, setor/tarik, validasi saldo, jurnal otomatis.
 - **Pembiayaan Multi-Akad** — Murabahah, Mudharabah, Musyarakah, Ijarah, Qardh.
-- **Alur Pembiayaan** — pengajuan → persetujuan → jadwal angsuran otomatis → pembayaran → lunas, dengan jurnal otomatis.
-- **Denda Ta'zir** — nominal (Rp/hari) atau persen (%/hari), dicatat sebagai Dana Sosial (bukan pendapatan).
+- **Denda Ta'zir** — nominal (Rp/hari) atau persen (%/hari), dicatat sebagai Dana Sosial.
 - **Akuntansi** — Chart of Accounts, jurnal otomatis & manual, saldo awal, buku besar.
-- **Laporan Keuangan** — Laba Rugi, Neraca, Arus Kas, PHU/SHU + export Excel & cetak PDF.
+- **Laporan Keuangan** — Laba Rugi, Neraca, Arus Kas, PHU/SHU + export Excel & PDF.
 - **SHU** — perhitungan tahunan, alokasi dana, pembagian ke anggota (jasa modal & jasa usaha).
 - **Notifikasi** — pengingat jatuh tempo (lonceng), kirim via WhatsApp gateway / Email.
-- **Pengaturan** — profil koperasi, parameter, jenis akad, akun user (khusus admin).
+- **Logo Koperasi** — upload dari Pengaturan → Profil (sidebar, login, favicon, kop laporan).
+- **Backup Otomatis** — export database + kirim lampiran ke email (cron/task scheduler), riwayat di tabel backup_log.
+- **Pengaturan** — profil, parameter, jenis akad, akun user (khusus admin).
 
 ## Instalasi (XAMPP)
-1. Letakkan folder di `C:\xampp\htdocs\Koperasi`.
+1. Salin folder ke `C:\xampp\htdocs\Koperasi`.
 2. Import `database_full.sql` via phpMyAdmin (menghapus & membuat ulang database).
-3. Sesuaikan `config/database.php` (default XAMPP: root, password kosong).
-4. Akses `http://localhost/Koperasi/` → login **admin / admin123**.
-5. Ganti password default di Pengaturan → Akun User.
+   - Untuk ByetHost: hapus baris DROP/CREATE/USE, lalu import ke database hosting Anda.
+3. Sesuaikan `config/database.php`.
+4. Akses `http://localhost/Koperasi/` → login **admin / admin123** → ganti password.
 
-## Konfigurasi Opsional
-- **Denda persen**: Pengaturan → Parameter → `denda_jenis` = `persen`.
-- **WhatsApp**: isi `wa_gateway` & `wa_api_key` (contoh: Fonnte). Tanpa API key = mode simulasi.
-- **Email**: server harus mendukung fungsi `mail()` (XAMPP lokal biasanya tidak — gunakan hosting/PHPMailer).
-- **PDF asli**: tambahkan DomPDF/TCPDF via Composer ke folder `libs/`.
-- **Excel .xlsx asli**: tambahkan PhpSpreadsheet ke folder `libs/`.
+## Konfigurasi Penting (Pengaturan → Parameter)
+| Parameter | Fungsi |
+|---|---|
+| `denda_jenis` / `denda_harian` / `denda_persen` | Mode & tarif denda ta'zir |
+| `notif_hari` | Notifikasi H-sekian sebelum jatuh tempo |
+| `shu_*` | Persentase alokasi SHU |
+| `wa_gateway` / `wa_api_key` | Gateway WhatsApp (Fonnte/Wablas) |
+| `email_pengirim` | Alamat email pengirim notifikasi & backup |
+| `logo` | Nama file logo (otomatis saat upload) |
+| `backup_email` / `backup_token` | Tujuan & keamanan backup otomatis |
 
-## Catatan Penting
-- Laporan keuangan terisi dari **jurnal**; transaksi lama sebelum fitur akuntansi tidak tercatat — gunakan **Saldo Awal** untuk posisi awal.
-- Simpanan Pokok & Wajib = **Ekuitas**; Simpanan Sukarela = **Kewajiban**.
-- Denda ta'zir = **Dana Sosial (305)**, sesuai prinsip syariah.
+## Backup Otomatis
+- Uji manual: buka `cron/backup_database.php?token=TOKEN-ANDA` atau tombol di **Pengaturan → Backup Database**.
+- Jadwal ByetHost (Cron Job): `wget -q -O /dev/null "https://DOMAIN/cron/backup_database.php?token=TOKEN"`
+- Jadwal XAMPP (Task Scheduler): program `C:\xampp\php\php.exe`, argumen `"C:\xampp\htdocs\Koperasi\cron\backup_database.php" TOKEN`
+- Salinan juga disimpan di folder `backups/` (5 file terakhir, terproteksi .htaccess).
+
+## Catatan
+- Laporan keuangan terisi dari jurnal; gunakan **Saldo Awal** untuk posisi awal.
+- Simpanan Pokok & Wajib = Ekuitas; Sukarela = Kewajiban; Denda = Dana Sosial (305).
+- Untuk email yang lebih andal (SMTP Gmail), dapat menambahkan PHPMailer ke folder `libs/`.

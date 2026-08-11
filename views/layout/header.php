@@ -9,7 +9,11 @@ require_once __DIR__ . '/../../models/NotifikasiModel.php';
 $user      = $_SESSION['user'];
 $pageTitle = $pageTitle ?? 'Dashboard';
 $active    = $active ?? 'dashboard';
-$profil    = (new PengaturanModel())->profil();
+
+$pmModel = new PengaturanModel();
+$profil  = $pmModel->profil();
+$logo    = trim((string)$pmModel->get('logo', ''));
+$logoAda = $logo !== '' && file_exists(__DIR__ . '/../../assets/img/' . $logo);
 
 if (!function_exists('rupiah')) {
     function rupiah($n) { return 'Rp ' . number_format((float)($n ?: 0), 0, ',', '.'); }
@@ -43,14 +47,18 @@ unset($_SESSION['flash']);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<?php if ($logoAda): ?><link rel="icon" href="assets/img/<?= e($logo) ?>"><?php endif; ?>
 </head>
 <body>
 <div class="wrapper">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <i class="fas fa-mosque"></i>
+      <?php if ($logoAda): ?>
+        <img src="assets/img/<?= e($logo) ?>" alt="Logo">
+      <?php else: ?>
+        <i class="fas fa-mosque"></i>
+      <?php endif; ?>
       <span><?= e($profil['nama_koperasi'] ?? 'KSU Syariah') ?></span>
     </div>
     <nav>
@@ -97,17 +105,17 @@ unset($_SESSION['flash']);
         <i class="fas fa-handshake"></i> Jenis Akad</a>
       <a href="index.php?mod=pengaturan&act=akun_user" class="<?= $active==='pengaturan-user'?'on':'' ?>">
         <i class="fas fa-user-cog"></i> Akun User</a>
+      <a href="index.php?mod=pengaturan&act=backup" class="<?= $active==='pengaturan-backup'?'on':'' ?>">
+        <i class="fas fa-database"></i> Backup Database</a>
       <?php endif; ?>
     </nav>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
     <nav class="topbar">
       <button class="btn btn-link text-white d-md-none" id="btnSidebar"><i class="fas fa-bars"></i></button>
       <div class="topbar-title"><?= e($pageTitle) ?></div>
 
-      <!-- LONCENG NOTIFIKASI -->
       <div class="dropdown ms-auto me-2">
         <button class="btn btn-link text-white position-relative" data-bs-toggle="dropdown">
           <i class="fas fa-bell"></i>

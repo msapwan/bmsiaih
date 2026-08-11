@@ -13,14 +13,14 @@ $act = $_GET['act'] ?? 'index';
 $routes = [
     'dashboard'  => ['index' => __DIR__ . '/views/dashboard.php'],
     'anggota'    => [
-        'list'   => __DIR__ . '/views/anggota/list.php',
-        'form'   => __DIR__ . '/views/anggota/form.php',
-        'detail' => __DIR__ . '/views/anggota/detail.php',
+        'list'           => __DIR__ . '/views/anggota/list.php',
+        'form'           => __DIR__ . '/views/anggota/form.php',
+        'detail'         => __DIR__ . '/views/anggota/detail.php',
         'rekening_koran' => __DIR__ . '/views/anggota/rekening_koran.php',
     ],
     'simpanan'   => [
-        'list'   => __DIR__ . '/views/simpanan/list.php',
-        'form'   => __DIR__ . '/views/simpanan/form.php',
+        'list' => __DIR__ . '/views/simpanan/list.php',
+        'form' => __DIR__ . '/views/simpanan/form.php',
     ],
     'pembiayaan' => [
         'list'      => __DIR__ . '/views/pembiayaan/list.php',
@@ -56,6 +56,7 @@ $routes = [
         'parameter'  => __DIR__ . '/views/pengaturan/parameter.php',
         'jenis_akad' => __DIR__ . '/views/pengaturan/jenis_akad.php',
         'akun_user'  => __DIR__ . '/views/pengaturan/akun_user.php',
+        'backup'     => __DIR__ . '/views/pengaturan/backup.php',
     ],
 ];
 

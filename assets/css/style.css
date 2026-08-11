@@ -1,4 +1,3 @@
-/* ===== Koperasi Syariah — custom style ===== */
 :root {
   --primary:   #0f766e;
   --primary-2: #115e59;
@@ -66,9 +65,18 @@ body { background: #f1f5f9; font-family: system-ui, -apple-system, "Segoe UI", R
 .rounded-top-0 { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
 .table thead th { white-space: nowrap; }
 
-/* Dropdown notifikasi jatuh tempo */
 .notif-dropdown { width: 340px; max-height: 400px; overflow-y: auto; }
 .notif-dropdown .dropdown-item { white-space: normal; }
+
+/* Logo koperasi */
+.sidebar .brand img {
+  width: 36px; height: 36px; object-fit: contain;
+  border-radius: 8px; flex-shrink: 0; background: #fff; padding: 2px;
+}
+.login-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Rekening Koran */
+.rk-kop hr { margin-top: .25rem; margin-bottom: .25rem; }
 
 @media (max-width: 767.98px) {
   .sidebar { transform: translateX(-100%); transition: transform .25s; }
@@ -81,12 +89,6 @@ body { background: #f1f5f9; font-family: system-ui, -apple-system, "Segoe UI", R
   .main { margin: 0; }
   .content { padding: 0; }
   .card { box-shadow: none !important; border: none !important; }
-}
-
-/* Rekening Koran */
-.rk-kop hr { margin-top: .25rem; margin-bottom: .25rem; }
-@media print {
   .rk-kop h4 { font-size: 1.25rem; }
   .rk-kop h5 { font-size: 1rem; }
-  .card { border: none !important; }
 }

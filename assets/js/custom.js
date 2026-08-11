@@ -1,4 +1,3 @@
-/* ===== Koperasi Syariah — custom JS ===== */
 $(function () {
 
   $('#btnSidebar').on('click', function () {
@@ -11,26 +10,22 @@ $(function () {
     }
   });
 
-  // Format ribuan otomatis
   $(document).on('input', '.input-uang', function () {
     var v = this.value.replace(/\D/g, '');
     this.value = v ? Number(v).toLocaleString('id-ID') : '';
   });
 
-  // Kembalikan ke angka murni sebelum form dikirim
   $('form').on('submit', function () {
     $(this).find('.input-uang').each(function () {
       this.value = this.value.replace(/\./g, '');
     });
   });
 
-  // Form simpanan: isi nominal default (pokok/wajib)
   $('#jenis_simpanan').on('change', function () {
     var n = $(this).find(':selected').data('nominal');
     if (n) $('#jumlah').val(Number(n).toLocaleString('id-ID'));
   });
 
-  // Form pengajuan pembiayaan: tampilkan margin/nisbah sesuai tipe akad
   $('#id_akad').on('change', function () {
     var tipe = $(this).find(':selected').data('tipe') || 'margin';
     $('#grupMargin').toggleClass('d-none', tipe !== 'margin');
